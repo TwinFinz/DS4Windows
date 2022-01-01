@@ -83,6 +83,10 @@ namespace DS4Windows
         public delegate void HotplugControllerHandler(ControlService sender, DS4Device device, int index);
         public event HotplugControllerHandler HotplugController;
 
+        //Needed Vibration Event
+        public delegate void VibrationData(byte LargeMotor, byte SmallMotor, int devIndex);
+        public event VibrationData VibrationRecieved;
+
         private byte[][] udpOutBuffers = new byte[UdpServer.NUMBER_SLOTS][]
         {
             new byte[100], new byte[100],
@@ -810,6 +814,8 @@ namespace DS4Windows
                     //Console.WriteLine("Rumble ({0}, {1}) {2}",
                     //    args.LargeMotor, args.SmallMotor, DateTime.Now.ToString("hh:mm:ss.FFFF"));
                     SetDevRumble(device, args.LargeMotor, args.SmallMotor, devIndex);
+
+                    VibrationRecieved(args.LargeMotor, args.SmallMotor, devIndex); //Added
                 };
                 tempXbox.cont.FeedbackReceived += p;
                 tempXbox.forceFeedbacksDict.Add(index, p);
